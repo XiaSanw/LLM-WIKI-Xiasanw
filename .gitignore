@@ -3,7 +3,6 @@ __pycache__/
 .venv/
 node_modules/
 .quartz-cache/
-quartz/content/
 quartz/public/
 .trellis/workspace/
 .trellis/.runtime/
