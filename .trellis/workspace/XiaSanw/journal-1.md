@@ -135,3 +135,36 @@ README 更新至 v0.3 真实架构（去域化、三阶段ingest、API端点）�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: 开发实录 + 图谱修复 + 色值转换
+
+**Date**: 2026-05-24
+**Task**: 开发实录 + 图谱修复 + 色值转换
+**Branch**: `main`
+
+### Summary
+
+生成首份 synthesis：llmwiki-base 开发实录，记录 6 个设计演变（去域化/深度自审/自检路由/去日期/...）、6 个工程踩坑（gitignore屏蔽Quartz/oklch崩D3/set-e静默失败/shell拆词/Agent凑字数/自动触发遗忘）、5 条设计哲学。修复 oklch→hex 颜色转换消除图谱空白。安装 culori 做色值转换。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `20cf7da` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
