@@ -25,7 +25,7 @@ tags: [llm-wiki, knowledge-base, development, lessons-learned, architecture]
 
 **为什么废弃**：第一次真实 ingest 就暴露了问题——gupiao 项目同时涉及 AI 技术、股票量化、软件架构三个方向。强制塞进一个域是错的。真实知识是网状的，不是树状的。
 
-**最终方案**：全放 kb/ 下，用 tags + `[[双向链接]]` 组织。分类从使用中涌现，不预设。
+**最终方案**：全放 kb/ 下，用 tags + 双向链接 组织。分类从使用中涌现，不预设。
 
 ### 2. "最低标准" → "深度自审"
 
@@ -79,7 +79,7 @@ tags: [llm-wiki, knowledge-base, development, lessons-learned, architecture]
 
 ### 坑 4：Shell 的 `for link in $ALL_LINKS` 按空格拆词
 
-**现象**：lint 脚本报虚假的断链 `[[待创建]]` 和 `[[xx]]`，但文件里明明是 `[[待创建 xx]]`。
+**现象**：lint 脚本报虚假的断链 【待创建】 和 【xx】，但文件里明明是 【待创建 xx】。
 
 **根因**：`$ALL_LINKS` 不加引号时，shell 按空格拆成多个词。`待创建 xx` 被拆成 `待创建` 和 `xx` 两个"链接"。
 

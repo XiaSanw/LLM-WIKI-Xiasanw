@@ -99,6 +99,16 @@
 
 **阶段 C — 收尾验证**：
 13. 更新 `kb/index.md` 和 `kb/log.md`
+    **log.md 格式（强制）**：
+    ```
+    ## YYYY-MM-DD — [tag1] [tag2] 简短标题
+    - **标签**: `[tag1]` `[tag2]`
+    - **操作**：一句话描述做了什么
+    - **新增**：xxx（列表）
+    - **更新**：xxx（列表）
+    - **规模**：X 页（类型分布）
+    ```
+    日志标签体系：`[ingest]` 素材消化 | `[content]` 页面增改 | `[comparison]` 对比分析 | `[synthesis]` 综合分析 | `[fix]` 质量修复 | `[system]` 系统变更 | `[style]` 美化调整 | `[init]` 初始化
 14. 运行质量检查：`bash skill/scripts/lint-wiki.sh kb links sources content depth`
 15. lint 发现问题 → 修复 → 重新验证
 16. 向用户报告变更摘要（新增/更新了哪些页面、发现的关联）
