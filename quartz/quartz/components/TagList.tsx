@@ -37,7 +37,7 @@ TagList.css = `
 .section-li > .section > .tags {
   justify-content: flex-end;
 }
-  
+
 .tags > li {
   display: inline-block;
   white-space: nowrap;
@@ -46,10 +46,28 @@ TagList.css = `
 }
 
 a.internal.tag-link {
-  border-radius: 8px;
-  background-color: var(--highlight);
-  padding: 0.2rem 0.4rem;
-  margin: 0 0.1rem;
+  font-family: var(--codeFont);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-md);
+  background-color: var(--lightgray) !important;
+  color: var(--gray);
+  border: none;
+  line-height: 1.4;
+}
+
+a.internal.tag-link:hover {
+  background-color: var(--accent-hover) !important;
+  color: var(--secondary);
+}
+
+a.internal.tag-link::before {
+  content: "#";
+  opacity: 0.5;
+  margin-right: 0.15rem;
 }
 `
 

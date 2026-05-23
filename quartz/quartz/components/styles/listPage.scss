@@ -11,9 +11,12 @@ li.section-li {
 
   & > .section {
     display: grid;
-    grid-template-columns: fit-content(8em) 3fr 1fr;
+    grid-template-columns: fit-content(8em) 2fr 1.5fr;
+    gap: 1rem;
+    align-items: baseline;
 
     @media all and ($mobile) {
+      grid-template-columns: fit-content(8em) 1fr;
       & > .tags {
         display: none;
       }
@@ -24,8 +27,22 @@ li.section-li {
     }
 
     & .meta {
-      margin: 0 1em 0 0;
+      margin: 0;
       opacity: 0.6;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    & > .tags {
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0;
+      padding: 0;
+
+      & > li {
+        margin: 0;
+      }
     }
   }
 }

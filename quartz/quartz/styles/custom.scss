@@ -1,3 +1,483 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+/* ─────────────────────────────────────────
+   LLM Wiki — Warm Editorial Design System
+   Based on Open Design philosophy:
+   • Deterministic OKLch palette
+   • Posture cues for editorial warmth
+   • Anti-AI-slop discipline
+   ───────────────────────────────────────── */
+
+/* ── 1. CSS Custom Properties (extensions) ── */
+:root {
+  /* Surface & elevation */
+  --surface: oklch(100% 0 0);
+  --surface-raised: oklch(100% 0 0);
+  --muted-text: var(--gray);
+
+  /* Accent semantic */
+  --accent-subtle: oklch(55% 0.14 45 / 0.08);
+  --accent-hover: oklch(55% 0.14 45 / 0.15);
+  --success: oklch(60% 0.12 145);
+  --warning: oklch(70% 0.12 85);
+
+  /* Radius discipline */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+}
+
+:root[saved-theme="dark"] {
+  --surface: oklch(24% 0.01 70);
+  --surface-raised: oklch(28% 0.012 70);
+  --accent-subtle: oklch(68% 0.14 45 / 0.1);
+  --accent-hover: oklch(68% 0.14 45 / 0.2);
+}
+
+/* ── 2. Global typography overrides ── */
+
+/* Chinese body line-height: 1.7–1.8 is ideal for CJK */
+article {
+  p,
+  ul,
+  ol,
+  li {
+    line-height: 1.75 !important;
+  }
+
+  /* Strong readability for long-form CJK */
+  p {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Heading discipline */
+  & > h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  & > h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--lightgray);
+  }
+
+  & > h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  & > h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ── 3. Link discipline (Anti-slop) ── */
+
+/* Body links: muted + underline, not screaming accent */
+article p a,
+article li a,
+article td a {
+  font-weight: 500;
+  color: var(--darkgray);
+  text-decoration: underline;
+  text-decoration-color: var(--gray);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+
+  &:hover {
+    color: var(--secondary);
+    text-decoration-color: var(--secondary);
+  }
+}
+
+/* Internal wiki links: subtle highlight background */
+article a.internal {
+  font-weight: 500;
+  color: var(--darkgray);
+  text-decoration: none;
+  background-color: var(--accent-subtle) !important;
+  padding: 0.05rem 0.3rem !important;
+  border-radius: var(--radius-sm) !important;
+  border-bottom: 1px solid transparent;
+  line-height: 1.5rem;
+
+  &:hover {
+    color: var(--secondary);
+    background-color: var(--accent-hover) !important;
+    border-bottom-color: var(--secondary);
+  }
+
+  &.broken {
+    opacity: 0.5;
+    text-decoration: line-through;
+    background-color: transparent !important;
+  }
+}
+
+/* Tag links: pill shape, mono font */
+a.internal.tag-link {
+  font-family: var(--codeFont);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.5rem !important;
+  border-radius: var(--radius-md) !important;
+  background-color: var(--lightgray) !important;
+  color: var(--gray);
+
+  &::before {
+    content: "#";
+    opacity: 0.6;
+    margin-right: 0.1rem;
+  }
+
+  &:hover {
+    background-color: var(--accent-hover) !important;
+    color: var(--secondary);
+  }
+}
+
+/* External links: keep icon, but no bold */
+a.external {
+  font-weight: 500;
+}
+
+/* ── 4. Component radius discipline ── */
+
+/* Code blocks */
+pre {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--lightgray);
+}
+
+code {
+  border-radius: var(--radius-sm);
+  padding: 0.15rem 0.35rem;
+  font-size: 0.85em;
+}
+
+/* Images */
+img {
+  border-radius: var(--radius-md);
+}
+
+/* Callouts */
+.callout {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--lightgray);
+  background-color: var(--surface);
+}
+
+/* Tables */
+.table-container > table {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--lightgray);
+  overflow: hidden;
+}
+
+/* Blockquotes — compact editorial style */
+blockquote {
+  border-left: 2px solid var(--secondary);
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0.3rem 0 0.3rem 0.75rem;
+  margin: 0.5rem 0;
+
+  & > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  border-radius: var(--radius-sm);
+}
+
+/* ── 5. Sidebar & chrome refinements ── */
+
+.sidebar.left {
+  gap: 1rem;
+}
+
+/* Page title */
+.page-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Explorer (file tree) */
+#explorer-content ul li > a {
+  font-weight: 400;
+  color: var(--darkgray);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.4rem;
+
+  &:hover {
+    background-color: var(--accent-subtle);
+    color: var(--dark);
+  }
+}
+
+/* Search input */
+.search input {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--lightgray);
+  background-color: var(--surface);
+
+  &:focus {
+    border-color: var(--secondary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+}
+
+/* TOC */
+.toc ul li > a {
+  font-weight: 400;
+  color: var(--gray);
+  border-radius: var(--radius-sm);
+  padding: 0.15rem 0.3rem;
+
+  &.active {
+    color: var(--secondary);
+    background-color: var(--accent-subtle);
+    font-weight: 600;
+  }
+
+  &:hover {
+    color: var(--darkgray);
+    background-color: var(--accent-subtle);
+  }
+}
+
+/* Graph */
+.graph > .graph-outer {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--lightgray);
+}
+
+/* Backlinks */
+.backlinks > .backlinks-list li a {
+  font-weight: 400;
+  color: var(--darkgray);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.5rem;
+
+  &:hover {
+    background-color: var(--accent-subtle);
+    color: var(--secondary);
+  }
+}
+
+/* ── 6. Content meta (article top info) ── */
+.content-meta {
+  color: var(--gray);
+  font-size: 0.85rem;
+
+  & > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+/* ── 7. Popover refinements ── */
+.popover-inner {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--lightgray);
+  box-shadow: 0 4px 20px oklch(22% 0.02 70 / 0.08);
+}
+
+/* ── 8. Footer minimalism ── */
+footer {
+  opacity: 0.7;
+  font-size: 0.8rem;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--lightgray);
+}
+
+/* ── 9. Selection color ── */
+::selection {
+  background: oklch(55% 0.14 45 / 0.25);
+  color: var(--dark);
+}
+
+:root[saved-theme="dark"] ::selection {
+  background: oklch(68% 0.14 45 / 0.35);
+  color: var(--dark);
+}
+
+/* ── 10. Mobile polish ── */
+@media all and (max-width: 800px) {
+  article {
+    & > h1 {
+      font-size: 1.6rem;
+    }
+    & > h2 {
+      font-size: 1.25rem;
+    }
+    & > h3 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .page {
+    padding: 0 1rem;
+  }
+}
+
+/* ── 11. Landing page helpers (for Phase 2) ── */
+.landing-hero {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-md);
+
+  .landing-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+  }
+
+  .landing-subtitle {
+    font-size: 1.15rem;
+    color: var(--gray);
+    max-width: 500px;
+    margin: 0 auto var(--space-xl);
+    line-height: 1.6;
+  }
+
+  .landing-search {
+    max-width: 480px;
+    margin: 0 auto var(--space-2xl);
+  }
+}
+
+.landing-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+  max-width: 600px;
+  margin: 0 auto var(--space-2xl);
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--lightgray);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px oklch(22% 0.02 70 / 0.06);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: var(--space-xs);
+      text-transform: lowercase;
+      font-family: var(--codeFont);
+      letter-spacing: 0.05em;
+    }
+  }
+}
+
+.landing-section {
+  max-width: 700px;
+  margin: 0 auto var(--space-2xl);
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+    margin-bottom: var(--space-md);
+    font-family: var(--codeFont);
+  }
+}
+
+.landing-recent {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--lightgray);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .recent-date {
+      font-family: var(--codeFont);
+      font-size: 0.75rem;
+      color: var(--gray);
+      white-space: nowrap;
+      min-width: 5rem;
+    }
+
+    .recent-title {
+      font-weight: 500;
+      color: var(--darkgray);
+
+      &:hover {
+        color: var(--secondary);
+      }
+    }
+
+    .recent-tag {
+      font-family: var(--codeFont);
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-sm);
+      background: var(--lightgray);
+      color: var(--gray);
+      text-transform: lowercase;
+    }
+  }
+}
