@@ -67,7 +67,7 @@ check_links() {
 
     # 提取所有 [[链接]] - 排除 frontmatter（--- 之间的内容）和代码块
     # 使用更精确的匹配，只匹配真正的 wikilink 语法
-    ALL_LINKS=$(grep -roh '\[\[[^]]*\]\]' --include="*.md" wiki/ Index.md log.md 2>/dev/null | \
+    ALL_LINKS=$(grep -roh '\[\[[^]]*\]\]' --include="*.md" wiki/ index.md log.md 2>/dev/null | \
         sort -u | \
         sed 's/\[\[//;s/\]\]//' | \
         grep -v "^[0-9]\{4\}-" | \
@@ -233,10 +233,10 @@ check_depth() {
 }
 
 #==============================================================================
-# 检查项 5: Index.md 完整性
+# 检查项 5: index.md 完整性
 #==============================================================================
 check_index() {
-    echo "[检查 5/5] Index.md 完整性..."
+    echo "[检查 5/5] index.md 完整性..."
     echo "----------------------------------------"
 
     local has_error=0
@@ -246,11 +246,11 @@ check_index() {
     actual_entities=$(ls -1 wiki/entities/*.md 2>/dev/null | wc -l | tr -d ' ')
     actual_topics=$(ls -1 wiki/topics/*.md 2>/dev/null | wc -l | tr -d ' ')
 
-    # 检查 Index.md 中的统计
-    index_sources=$(grep -o "素材总数：[0-9]*" Index.md | grep -o "[0-9]*" || echo "0")
+    # 检查 index.md 中的统计
+    index_sources=$(grep -o "素材总数：[0-9]*" index.md | grep -o "[0-9]*" || echo "0")
 
     if [ -n "$index_sources" ] && [ "$index_sources" != "$actual_sources" ]; then
-        echo -e "${YELLOW}⚠️  素材数统计不一致: Index.md 说 ${index_sources}，实际 ${actual_sources}${NC}"
+        echo -e "${YELLOW}⚠️  素材数统计不一致: index.md 说 ${index_sources}，实际 ${actual_sources}${NC}"
         WARNING_COUNT=$((WARNING_COUNT + 1))
         has_error=1
     fi
@@ -259,15 +259,15 @@ check_index() {
     for f in wiki/sources/*.md wiki/entities/*.md wiki/topics/*.md; do
         if [ ! -f "$f" ]; then continue; fi
         filename=$(basename "$f" .md)
-        if ! grep -q "\[\[${filename}\]\]" Index.md; then
-            echo -e "${YELLOW}⚠️  文件未在 Index.md 中索引: $f${NC}"
+        if ! grep -q "\[\[${filename}\]\]" index.md; then
+            echo -e "${YELLOW}⚠️  文件未在 index.md 中索引: $f${NC}"
             WARNING_COUNT=$((WARNING_COUNT + 1))
             has_error=1
         fi
     done
 
     if [ $has_error -eq 0 ]; then
-        echo -e "${GREEN}✅ Index.md 完整性达标${NC}"
+        echo -e "${GREEN}✅ index.md 完整性达标${NC}"
         PASS_COUNT=$((PASS_COUNT + 1))
     fi
     echo ""

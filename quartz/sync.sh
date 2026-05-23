@@ -9,7 +9,7 @@ rm -rf content
 mkdir content
 cp "$WIKI_DIR/.wiki-schema.md" content/
 cp "$WIKI_DIR/about-me.md" content/
-cp "$WIKI_DIR/Index.md" content/
+cp "$WIKI_DIR/index.md" content/
 cp "$WIKI_DIR/log.md" content/
 cp -r "$WIKI_DIR/wiki" content/
 cp -r "$WIKI_DIR/raw" content/
