@@ -4,8 +4,11 @@ __pycache__/
 node_modules/
 .quartz-cache/
 quartz/public/
-.trellis/workspace/
+.trellis/.backup-*
+.trellis/worktrees/
+.trellis/.template-hashes.json
 .trellis/.runtime/
+.trellis/.cache/
 data.db
 *.pyc
 .env
