@@ -1,0 +1,5 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python3 .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": "PLAN.md", "reason": "整体实施计划，包含交互模型和架构决策"}
+{"file": "agent.md", "reason": "当前版本，作为重写基线"}
+{"file": "kb/ai/.wiki-schema.md", "reason": "schema v2.0，Agent 启动后需读取的质量标准"}
+{"file": "kb/ai/index.md", "reason": "当前知识库索引，Agent 需了解的结构"}
