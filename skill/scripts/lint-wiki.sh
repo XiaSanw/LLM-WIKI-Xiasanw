@@ -341,6 +341,59 @@ check_stale() {
 }
 
 #==============================================================================
+# 检查项 7: 自动综合阈值检测
+#==============================================================================
+check_thresholds() {
+    echo "[检查 7/7] 自动综合阈值检测..."
+    echo "----------------------------------------"
+
+    local entity_count=$(ls -1 wiki/entities/*.md 2>/dev/null | wc -l | tr -d ' ')
+    local source_count=$(ls -1 wiki/sources/*.md 2>/dev/null | wc -l | tr -d ' ')
+
+    # 提取所有实体 tags 并寻找 3+ 重叠的组合
+    echo "  实体: ${entity_count} 篇（需 3+ 可比 → comparison）"
+    echo "  素材: ${source_count} 篇（需 5+ 同主题 → synthesis）"
+
+    # 按 tags 聚类实体，找出潜在对比组
+    local tag_clusters=$(grep -h "^tags:" wiki/entities/*.md 2>/dev/null | \
+        sed 's/tags: //;s/\[//;s/\]//' | tr ',' '\n' | \
+        sed 's/^ *//;s/ *$//' | sort | uniq -c | sort -rn)
+
+    local found_trigger=0
+    local prev_tag=""
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+        local count=$(echo "$line" | awk '{print $1}')
+        local tag=$(echo "$line" | awk '{print $2}')
+        [ "$count" -ge 3 ] 2>/dev/null || continue
+        [ "$tag" = "$prev_tag" ] && continue
+        prev_tag="$tag"
+
+        # 列出这个 tag 下的实体
+        local entities=$(grep -l "tags:.*$tag" wiki/entities/*.md 2>/dev/null | \
+            sed 's|wiki/entities/||;s|\.md||' | tr '\n' ' ')
+        echo -e "${YELLOW}⚠️  可触发 comparison: tag=[$tag] (${count} 实体) → ${entities}${NC}"
+        found_trigger=1
+    done <<< "$tag_clusters"
+
+    if [ "$source_count" -ge 5 ]; then
+        echo -e "${YELLOW}⚠️  可触发 synthesis: ${source_count} 篇素材 ≥ 5 篇阈值${NC}"
+        found_trigger=1
+    fi
+
+    if [ $found_trigger -eq 0 ]; then
+        echo -e "${GREEN}✅ 暂未达到自动综合阈值${NC}"
+        PASS_COUNT=$((PASS_COUNT + 1))
+    else
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+        echo ""
+        echo "  提示：满足阈值时，Agent ingest 流程会自动提醒生成对比/综合分析。"
+        echo "  也可以在 Claude Code 中直接说「生成 XX 对比分析」。"
+    fi
+    echo ""
+}
+
+#==============================================================================
 # 执行检查
 #==============================================================================
 case "$CHECK_ITEMS" in
@@ -351,6 +404,7 @@ case "$CHECK_ITEMS" in
         check_depth
         check_index
         check_stale
+        check_thresholds
         ;;
     *)
         for item in $CHECK_ITEMS; do
@@ -361,6 +415,7 @@ case "$CHECK_ITEMS" in
                 depth) check_depth ;;
                 index) check_index ;;
                 stale) check_stale ;;
+                thresholds) check_thresholds ;;
                 *) echo "未知检查项: $item" ;;
             esac
         done
