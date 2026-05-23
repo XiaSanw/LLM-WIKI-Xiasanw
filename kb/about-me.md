@@ -33,7 +33,22 @@
 
 ## 当前知识库规模
 
-<!-- Agent 定期更新以下数字 -->
-- Wiki 页面：12 篇
+<!-- Agent 每次 ingest 后更新以下数字 -->
+- Wiki 页面：12 篇（实体 8 + 主题 2 + 素材 2）
 - 项目：0 个
-- 素材：2 篇
+- API 服务：localhost:8000（读写 + 搜索）
+- 网站：http://localhost:8080
+- Inbox：~/inbox/（扔文件进去 → "扫一下 inbox"）
+
+## 常用命令
+
+```bash
+# 启动 API
+python server/wiki_api.py
+
+# 启动网站
+cd quartz && npx quartz build --serve
+
+# 质量检查
+bash skill/scripts/lint-wiki.sh kb all
+```
