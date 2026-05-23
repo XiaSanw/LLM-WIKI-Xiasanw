@@ -9,6 +9,7 @@ echo "同步 wiki → Quartz content..."
 cd "$SCRIPT_DIR"
 rm -rf content/*
 cp "$WIKI_DIR/.wiki-schema.md" content/
+cp "$WIKI_DIR/about-me.md" content/
 cp "$WIKI_DIR/index.md" content/
 cp "$WIKI_DIR/log.md" content/
 cp -r "$WIKI_DIR/wiki" content/
