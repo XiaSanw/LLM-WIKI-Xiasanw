@@ -102,3 +102,36 @@ README 更新至 v0.3 真实架构（去域化、三阶段ingest、API端点）�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Quartz 网站主题美化
+
+**Date**: 2026-05-24
+**Task**: Quartz 网站主题美化
+**Branch**: `main`
+
+### Summary
+
+升级 Quartz 配色方案：hex 转 oklch 色彩空间，字体改为 Schibsted Grotesk + Source Sans 3。新增 PageInfo 和 RelatedPages 自定义组件。优化 listPage、base、custom 样式。调整 TagList 和 Content 组件。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `063f669` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
