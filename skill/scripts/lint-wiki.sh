@@ -5,11 +5,11 @@
 #
 # 使用方式：
 #   bash lint-wiki.sh <知识库路径> [检查项]
-#   检查项可选：links, sources, content, depth, index, stale, all（默认 all）
+#   检查项可选：links, sources, content, depth, index, stale, thresholds, periodic, all（默认 all）
 #
 # 示例：
 #   bash lint-wiki.sh ./my-wiki all
-#   bash lint-wiki.sh ./my-wiki links sources
+#   bash lint-wiki.sh ./my-wiki links sources periodic
 #==============================================================================
 
 set -e
@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 # 检查参数
 if [ -z "$1" ]; then
     echo "使用方式: $0 <知识库路径> [检查项]"
-    echo "检查项: links, sources, content, depth, all（默认）"
+    echo "检查项: links, sources, content, depth, index, stale, thresholds, periodic, all（默认）"
     exit 1
 fi
 
@@ -394,6 +394,85 @@ check_thresholds() {
 }
 
 #==============================================================================
+# 检查项 8: 周期性维护（对照历史坑6——自动规则不能只靠Agent记忆）
+#==============================================================================
+check_periodic() {
+    echo "[检查 8/8] 周期性维护..."
+    echo "----------------------------------------"
+
+    local has_warn=0
+    local now_ts=$(date +%s)
+
+    # 8a. 种子归档检查
+    if [ -d "$KB_DIR/seeds" ]; then
+        local stale_seeds=0
+        for seed in "$KB_DIR/seeds"/*.md; do
+            [ ! -f "$seed" ] && continue
+            [ "$(basename "$seed")" = ".gitkeep" ] && continue
+            local seed_updated=$(head -30 "$seed" | grep "^updated:" | head -1 | sed 's/updated: *//')
+            if [ -n "$seed_updated" ]; then
+                local seed_ts=$(date -j -f "%Y-%m-%d" "$seed_updated" +%s 2>/dev/null || echo 0)
+                local days_old=$(( (now_ts - seed_ts) / 86400 ))
+                if [ "$days_old" -gt 30 ] 2>/dev/null; then
+                    echo -e "${YELLOW}⚠️  种子 $(basename "$seed") 已 ${days_old} 天未讨论，建议归档到 .archived/${NC}"
+                    stale_seeds=$((stale_seeds + 1))
+                fi
+            fi
+        done
+        if [ "$stale_seeds" -gt 0 ]; then
+            echo -e "${YELLOW}  共 ${stale_seeds} 颗种子超过 30 天未讨论${NC}"
+            has_warn=1
+        fi
+    fi
+
+    # 8b. 任务过期检查
+    if [ -f "$KB_DIR/tasks/todo.md" ]; then
+        local today=$(date +%Y-%m-%d)
+        local overdue_tasks=$(grep -c "deadline:.*[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}" "$KB_DIR/tasks/todo.md" 2>/dev/null || echo 0)
+        if [ "$overdue_tasks" -gt 0 ] 2>/dev/null; then
+            # 用 awk 检查是否有过期的
+            local overdue=$(awk -v today="$today" '
+                /deadline: *([0-9]{4}-[0-9]{2}-[0-9]{2})/ {
+                    match($0, /deadline: *([0-9]{4}-[0-9]{2}-[0-9]{2})/, m)
+                    if (m[1] < today) print m[1]
+                }
+            ' "$KB_DIR/tasks/todo.md" 2>/dev/null || true)
+            if [ -n "$overdue" ]; then
+                echo -e "${YELLOW}⚠️  有过期任务（deadline 早于 ${today}），建议确认或更新${NC}"
+                has_warn=1
+            fi
+        fi
+    fi
+
+    # 8c. 资产域名到期检查（30 天内）
+    if [ -d "$KB_DIR/assets" ]; then
+        local cutoff=$(date -v+30d +%Y-%m-%d 2>/dev/null || date -d "+30 days" +%Y-%m-%d 2>/dev/null || echo "")
+        if [ -n "$cutoff" ]; then
+            for asset in "$KB_DIR/assets"/*.md; do
+                [ ! -f "$asset" ] && continue
+                [ "$(basename "$asset")" = "index.md" ] && continue
+                local expiry=$(head -30 "$asset" | grep "^expires:" 2>/dev/null | head -1 | sed 's/expires: *//' || true)
+                if [ -n "$expiry" ] && [ "$expiry" \< "$cutoff" ] 2>/dev/null; then
+                    echo -e "${YELLOW}⚠️  资产 $(basename "$asset") 即将到期：${expiry}${NC}"
+                    has_warn=1
+                fi
+            done
+        fi
+    fi
+
+    if [ $has_warn -eq 0 ]; then
+        echo -e "${GREEN}✅ 周期性检查通过（种子/任务/资产）${NC}"
+        PASS_COUNT=$((PASS_COUNT + 1))
+    else
+        echo ""
+        echo "  提示：这些是提醒类检查，不会阻塞 ingest 流程。"
+        echo "  但建议定期处理，避免种子堆积、任务过期、域名漏续。"
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+    fi
+    echo ""
+}
+
+#==============================================================================
 # 执行检查
 #==============================================================================
 case "$CHECK_ITEMS" in
@@ -405,6 +484,7 @@ case "$CHECK_ITEMS" in
         check_index
         check_stale
         check_thresholds
+        check_periodic
         ;;
     *)
         for item in $CHECK_ITEMS; do
@@ -416,6 +496,7 @@ case "$CHECK_ITEMS" in
                 index) check_index ;;
                 stale) check_stale ;;
                 thresholds) check_thresholds ;;
+                periodic) check_periodic ;;
                 *) echo "未知检查项: $item" ;;
             esac
         done

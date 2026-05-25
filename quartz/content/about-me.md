@@ -33,7 +33,7 @@
 ### 使用偏好
 
 - 语言：中文为主，技术术语保留英文
-- 知识库交互：Skill 命令为主（/llmwiki-ingest、/llmwiki-query、/llmwiki-seed、/llmwiki-todo、/llmwiki-asset）
+- 知识库交互：Skill 命令或自然语言（/llmwiki-ingest/query/lint 用命令；点子/待办/资产用自然语言触发）
 - 文件名：英文 kebab-case，标题中文 + 英文副标题
 - 日期不放文件名，写在 frontmatter 里
 
