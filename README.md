@@ -83,13 +83,13 @@ Claude Code 中直接：
 
 ```bash
 # 主机启动 API
-python server/wiki_api.py    # → localhost:8000
+python server/wiki_api.py    # → localhost:8001
 
 # 远程调用
-curl localhost:8000/health
-curl localhost:8000/pages/wiki/entities/claude-code.md
-curl -X PUT localhost:8000/pages/wiki/test.md -d '{"content":"# 测试"}'
-curl -X POST 'localhost:8000/search?q=Agent'
+curl localhost:8001/health
+curl localhost:8001/pages/wiki/entities/claude-code.md
+curl -X PUT localhost:8001/pages/wiki/test.md -d '{"content":"# 测试"}'
+curl -X POST 'localhost:8001/search?q=Agent'
 ```
 
 ### 浏览网站

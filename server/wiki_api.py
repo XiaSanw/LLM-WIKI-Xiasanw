@@ -19,7 +19,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 
 KB_ROOT = Path(__file__).resolve().parent.parent / "kb"
-PORT = 8000
+PORT = 8001
 
 
 class WikiAPIHandler(BaseHTTPRequestHandler):

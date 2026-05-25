@@ -17,7 +17,7 @@
    → 成功 → 主机模式：你可以直接读写文件系统
    → 失败 → 进入步骤 2
 
-2. 尝试 HTTP GET http://localhost:8000/health（或用户配置的 API 地址）
+2. 尝试 HTTP GET http://localhost:8001/health（或用户配置的 API 地址）
    → 成功 → 远程模式：你通过 API 调用操作知识库
    → 失败 → 告知用户无法连接知识库，并询问：
             "无法连接到知识库。请确认：
@@ -32,7 +32,7 @@
 
 ### 远程模式
 
-你通过 HTTP API 调用操作知识库。API 由 `python server/wiki_api.py` 启动（端口 8000）：
+你通过 HTTP API 调用操作知识库。API 由 `python server/wiki_api.py` 启动（端口 8001）：
 
 - `GET /health` — 健康检查
 - `GET /pages/{path}` — 读取页面 Markdown 原文（path 相对于 kb/）
