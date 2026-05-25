@@ -12,7 +12,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     locale: "zh-CN",
     baseUrl: "llmwiki.local",
-    ignorePatterns: ["private", "templates", ".obsidian", ".wiki-schema.md"],
+    ignorePatterns: ["private", "templates", ".obsidian", ".wiki-schema.md", "seeds", "tasks", "assets"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
