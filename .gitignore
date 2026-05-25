@@ -1,14 +1,35 @@
+# OS
 .DS_Store
+
+# Python
 __pycache__/
 .venv/
+*.pyc
+
+# Node
 node_modules/
+
+# Quartz
 .quartz-cache/
 quartz/public/
+
+# Trellis / GSD
 .trellis/.backup-*
 .trellis/worktrees/
 .trellis/.template-hashes.json
 .trellis/.runtime/
 .trellis/.cache/
+
+# Data
 data.db
-*.pyc
 .env
+
+# ──────────────────────────────────
+# 个人知识库内容（不上传公开仓库）
+# 克隆后需自行创建这些文件/目录
+# ──────────────────────────────────
+kb/about-me.md
+kb/index.md
+kb/log.md
+kb/raw/
+kb/wiki/
