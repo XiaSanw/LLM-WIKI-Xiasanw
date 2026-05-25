@@ -57,31 +57,77 @@ Agent    ──→ agent.md 引导，读写 wiki，注入上下文
 
 ### 前置条件
 
-- Python 3.10+
-- Node.js 18+（仅网站浏览需要）
-- Git
+| 组件 | 依赖 | 说明 |
+|------|------|------|
+| **核心** | Python 3.10+ | 零外部依赖，纯标准库 |
+| **网站** | Node.js >= 22 + npm | 仅 Quartz 静态站点需要 |
+| **素材适配器** | uv + Chrome + Node | 可选，见下方说明 |
 
-### 1. 初始化知识库
+### 1. 安装依赖
 
 ```bash
-git clone https://github.com/your-username/llmwiki-base.git
-cd llmwiki-base
+# 核心（API 服务）—— 无需安装任何东西，Python 标准库直接跑
+python server/wiki_api.py
 
-# 创建你的个人知识库目录和初始文件
-mkdir -p kb/wiki/{entities,topics,projects,sources,comparisons,synthesis}
-mkdir -p kb/raw/images
+# 网站浏览 —— 需要 npm 安装 Quartz 依赖
+cd quartz && npm ci
 
-# 写你的 about-me.md（Agent 启动时读取，了解你的背景）
-cat > kb/about-me.md << 'EOF'
-# 关于我
-## 当前项目
-- xxx
-## 关注领域
-- xxx
-EOF
+# 可选：素材适配器（YouTube / 公众号 / URL 抓取）
+# 需要先装 uv：brew install uv
+bash skill/scripts/install.sh
 ```
 
-### 2. 主机模式（Claude Code / 本地 Agent）
+### 2. 初始化知识库
+
+```bash
+git clone https://github.com/XiaSanw/LLM-WIKI-Xiasanw.git
+cd LLM-WIKI-Xiasanw
+
+# 创建你的个人知识库目录
+mkdir -p kb/wiki/{entities,topics,projects,sources,comparisons,synthesis}
+mkdir -p kb/raw/images
+```
+
+### 3. 写一份 about-me.md
+
+**这是最关键的一步。** Agent 每次启动都会先读 `kb/about-me.md`，靠它了解你是谁、在做什么、关注什么。
+
+它不是一份死档案——它是 Agent 构建整个知识体系的**锚点**：
+
+```
+about-me 里的项目   →  Agent 知道该建哪些 project 页、会议纪要归哪
+about-me 里的关注领域 →  Agent 知道哪些素材相关、该建哪些 topic 页
+about-me 里的偏好    →  Agent 知道用什么语言、什么命名风格
+```
+
+你写基本信息，Agent 在使用过程中会**自动帮你补充和更新**：
+- 你提到新项目 → Agent 会问"要不要加进 about-me？"
+- 你开始关注新领域 → Agent 自动追加到关注列表，topic 构建有了依据
+- 项目状态变了 → Agent 同步更新
+
+创建 `kb/about-me.md`，至少写清这些：
+
+```markdown
+# 关于我
+
+## 当前项目
+| 项目 | 状态 | 说明 |
+|---|---|---|
+| 我的项目名 | 进行中 | 一句话描述 |
+
+## 关注领域
+- AI 编程工具
+- 个人知识管理
+- ...（你关注的领域）
+
+## 使用偏好
+- 语言：中文为主
+- 文件名：英文 kebab-case
+```
+
+之后你就可以把 Agent 当成一个**了解你背景的助手**使用，它会持续帮你积累知识。
+
+### 4. 主机模式（Claude Code / 本地 Agent）
 
 Agent 打开项目后自动读 `agent.md`，然后按指引操作：
 
@@ -92,7 +138,7 @@ Agent 打开项目后自动读 `agent.md`，然后按指引操作：
 /llmwiki-lint                                    # 质量检查
 ```
 
-### 3. 远程模式（HTTP API）
+### 5. 远程模式（HTTP API）
 
 ```bash
 python server/wiki_api.py          # 启动 API → localhost:8001
@@ -104,13 +150,13 @@ curl -X PUT localhost:8001/pages/wiki/test.md -d '{"content":"# Hello"}'
 curl -X POST 'localhost:8001/search?q=Agent'
 ```
 
-### 4. 浏览网站
+### 6. 浏览网站
 
 ```bash
 cd quartz && npx quartz build --serve   # → localhost:8080
 ```
 
-### 5. Inbox 快速收集
+### 7. Inbox 快速收集
 
 扔文件到 `~/inbox/`，对 Agent 说"扫一下 inbox"，自动消化并清理。
 
@@ -153,7 +199,7 @@ API：   Python http.server（零外部依赖）
 版本：  Git
 ```
 
-全本地运行，零外部依赖。不需要 PostgreSQL、Redis、Docker。
+全本地运行，核心 API 零外部依赖。不需要 PostgreSQL、Redis、Docker。
 
 ## 核心理念
 
